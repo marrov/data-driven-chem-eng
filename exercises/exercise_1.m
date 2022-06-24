@@ -16,10 +16,8 @@ L = L(1:round(length(L)/3),:);
 
 %% Run t-SNE
 
-tic
 rng default % for reproducibility
 Y = tsne(X,'Algorithm','barneshut','NumPCAComponents',50);
-toc
 
 %% Plot t-SME with and without labels
 
@@ -29,3 +27,17 @@ figure(2)
 numGroups = length(unique(L));
 clr = hsv(numGroups);
 gscatter(Y(:,1),Y(:,2),L,clr)
+
+%% Try for youself...
+
+% Different values of perplexity
+% Y = tsne(X, ...
+
+% Different distance metrics
+% Y = tsne(X, ...
+
+% Either or all of PCA components, learning rate, exxageration
+% Y = tsne(X, ...
+
+% Not using "rng default"
+% Y = tsne(X, ...
