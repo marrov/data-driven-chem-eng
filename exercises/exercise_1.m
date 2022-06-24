@@ -11,8 +11,8 @@ label_file = '../data/t10k-labels.idx1-ubyte';
 
 %% Reduce MNIST dataset size to reduce runtime
 
-X = X(1:round(length(X)/3),:);
-L = L(1:round(length(L)/3),:);
+X = X(1:round(length(X)/2),:);
+L = L(1:round(length(L)/2),:);
 
 %% Run t-SNE
 
