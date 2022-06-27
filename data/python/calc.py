@@ -51,8 +51,8 @@ def calc_Tad(T_in, T_out, P_in, mechanism):
 
                 gas.TPX = T_in, P_in, X
                 eq_wet  = gas.get_equivalence_ratio()
-                print (gas.get_equivalence_ratio())
-                print (gas.equivalence_ratio())
+                #print (gas.get_equivalence_ratio())
+                #print (gas.equivalence_ratio())
                 gas.equilibrate('HP')
 
                 if abs(gas.T-T_out)<1: # if equilibrium temperature < 1700K
@@ -290,7 +290,7 @@ if __name__ == '__main__':
     P_in  = 101325
     T_in  = 743
     T_out = 1700
-    mechanism = "./mechanism/SanDiego_NH3-H2.cti"
+    mechanism = "./SanDiego_NH3-H2.cti"
     X_H2_ref  = 0.5
 
     if sys.argv[1] not in arg :
