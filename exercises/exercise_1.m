@@ -5,8 +5,8 @@ clc; clear; close all;
 
 %% Read MNIST database
 
-image_file = '../data/t10k-images.idx3-ubyte';
-label_file = '../data/t10k-labels.idx1-ubyte';
+image_file = '../data/images.idx3-ubyte';
+label_file = '../data/labels.idx1-ubyte';
 [X, L] = read_mnist(image_file, label_file );
 
 %% Reduce MNIST dataset size to reduce runtime
