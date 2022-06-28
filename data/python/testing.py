@@ -9,11 +9,9 @@ from calc import *
 
 P_in = 101325
 T_in = 743
-T_out = 1600
 mechanism = 'data/python/SanDiego_NH3-H2.cti'
-#X_H2_ref = 0.5
 
-# %% Main function
+# %% Main function for adiabatic flame temp (Tad)
 
 gas   = ct.Solution(mechanism)
 eta   = [0.1]#np.linspace(0.0, 1.0, num=11) #101ammonia decomposition rate
@@ -53,23 +51,20 @@ for i in range(len(eta)):
             eq_wet  = gas.get_equivalence_ratio()
             gas.equilibrate('HP')
 
-            if abs(gas.T-T_out)<1: # if equilibrium temperature < 1700K
-                # check sum of X = 1 during wet
-                print ('eq dry = {}, eq wet = {} -> they should be equal!'.format(eq[j], eq_wet))
-                print ('Omega = {}, wet mixture sum = {}, T = {}\n'.format(omega[k], (XN2 + XO2 + XH2 + XNH3 + Xsteam), gas.T))
-                XNO_p      = gas['NO'].X # wet base product
-                XNO2_p     = gas['NO2'].X # wet base product
-                XNH3_p     = gas['NH3'].X # wet base product
-                Xsteam_p   = gas['H2O'].X # wet base product
-                XO2_p      = gas['O2'].X # wet base product
+            # check sum of X = 1 during wet
+            print ('eq dry = {}, eq wet = {} -> they should be equal!'.format(eq[j], eq_wet))
+            print ('Omega = {}, wet mixture sum = {}, T = {}\n'.format(omega[k], (XN2 + XO2 + XH2 + XNH3 + Xsteam), gas.T))
+            XNO_p      = gas['NO'].X # wet base product
+            XNO2_p     = gas['NO2'].X # wet base product
+            XNH3_p     = gas['NH3'].X # wet base product
+            Xsteam_p   = gas['H2O'].X # wet base product
+            XO2_p      = gas['O2'].X # wet base product
+            XNH3_ppmvd = (XNH3_p / (1 - Xsteam_p) * (20.9 - 15) / (20.9 - XO2_p / (1 - Xsteam_p))) * 1e06 ##ppmvd product
+            XNO_ppmvd  = (XNO_p  / (1 - Xsteam_p) * (20.9 - 15) / (20.9 - XO2_p / (1 - Xsteam_p))) * 1e06 ##ppmvd product
+            XNO2_ppmvd = (XNO2_p  / (1 - Xsteam_p) * (20.9 - 15) / (20.9 - XO2_p / (1 - Xsteam_p))) * 1e06 ##ppmvd product
+            data.append((eta[i], eq[j], omega[k], gas.T, Xsteam[0], XO2[0], XN2[0], XH2[0], XNH3[0], XNO_ppmvd[0], XNO2_ppmvd[0], XNH3_ppmvd[0]))
 
-                XNH3_ppmvd = (XNH3_p / (1 - Xsteam_p) * (20.9 - 15) / (20.9 - XO2_p / (1 - Xsteam_p))) * 1e06 ##ppmvd product
-                XNO_ppmvd  = (XNO_p  / (1 - Xsteam_p) * (20.9 - 15) / (20.9 - XO2_p / (1 - Xsteam_p))) * 1e06 ##ppmvd product
-                XNO2_ppmvd = (XNO2_p  / (1 - Xsteam_p) * (20.9 - 15) / (20.9 - XO2_p / (1 - Xsteam_p))) * 1e06 ##ppmvd product
-
-                data.append((eta[i], eq[j], omega[k], gas.T, Xsteam[0], XO2[0], XN2[0], XH2[0], XNH3[0], XNO_ppmvd[0], XNO2_ppmvd[0], XNH3_ppmvd[0]))
-                break
 df    = pd.DataFrame(data, columns = ['eta', 'eq', 'omega', 'T', 'Xsteam', 'XO2', 'XN2', 'XH2', 'XNH3', 'XNO_ppmvd', 'XNO2_ppmvd', 'XNH3_ppmvd'])
 df.to_csv('eq.csv')
 
-# %%
+# %% Main function for flame speec (SL)
