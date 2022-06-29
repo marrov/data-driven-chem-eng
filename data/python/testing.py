@@ -9,8 +9,8 @@ import cantera as ct
 
 P_in = 101325
 T_in = 743
-mechanism = './SanDiego_NH3-H2.cti'
-#mechanism = 'data/python/SanDiego_NH3-H2.cti'
+#mechanism = './SanDiego_NH3-H2.cti'
+mechanism = 'data/python/SanDiego_NH3-H2.cti'
 
 # %% Main function for adiabatic flame temp (Tad)
 
@@ -144,6 +144,6 @@ for i in range(len(data)):
     f.write_csv('./flame/flame{}.csv'.format(i+1), species='X')
     data2.append((eta, eq, omega, gas.T, Xsteam, XO2, XN2, XH2, XNH3, XNO_ppmvd, XNO2_ppmvd, XNH3_ppmvd))
 df    = pd.DataFrame(data, columns = ['eta', 'eq', 'omega', 'T', 'Xsteam', 'XO2', 'XN2', 'XH2', 'XNH3', 'XNO_ppmvd', 'XNO2_ppmvd', 'XNH3_ppmvd'])
-df.to_csv('SL.csv')
+df.to_csv('SL.csv', index=False)
 
 # %%
