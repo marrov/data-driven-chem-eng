@@ -1,3 +1,4 @@
+import time
 import numpy as np
 import cantera as ct
 
@@ -61,6 +62,9 @@ def get_flame(gas):
 
 
 def burn_ammonia(T_in: float, eta: float, phi: float, omega: float) -> tuple:
+    # Get current time
+    start_time = time.time()
+    
     # Fixed inputs
     P_in = 101325
     mechanism = './SanDiego_NH3-H2.cti'
@@ -81,4 +85,7 @@ def burn_ammonia(T_in: float, eta: float, phi: float, omega: float) -> tuple:
     SL = f.u[0]
     delta = get_thermal_thickness(f)
 
-    return Tad, NO, NO2, NH3, SL, delta
+    # Calculate runtime
+    runtime = time.time() - start_time
+
+    return Tad, NO, NO2, NH3, SL, delta, runtime
