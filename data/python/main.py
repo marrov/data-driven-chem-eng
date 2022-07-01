@@ -3,6 +3,7 @@
 import pandas as pd
 
 from helper import *
+from cantera import CanteraError
 from SALib.sample import saltelli
 
 # %% Define inputs using SALib with saltelli space filling sampling
@@ -22,7 +23,7 @@ problem = {'num_vars': len(input_labels),
                       [0.5, 2],
                       [0, 0.8]]}
 
-inputs = list(saltelli.sample(problem, 2**1, calc_second_order=False))
+inputs = list(saltelli.sample(problem, 2**10, calc_second_order=False))
 
 # %% Run case and get outputs
 
@@ -39,11 +40,18 @@ output_labels = ['Tad', 'NO', 'NO2', 'NH3', 'SL', 'delta', 'runtime']
 outputs = []
 
 for input in inputs:
-    outputs.append(burn_ammonia(*input))
+    try:
+        outputs.append(burn_ammonia(*input))
+    except CanteraError as e:
+        print(f'Error: {e}. Inputs used were ' + ', '.join(
+            [f'{label}={value}' for label, value in zip(input_labels, input)]))
+        outputs.append([None] * len(output_labels))
 
 # %% Make dataFrame and export to CSV file
 
 df = pd.concat([pd.DataFrame(data=inputs, columns=input_labels),
                 pd.DataFrame(data=outputs, columns=output_labels)], axis=1)
+
+df.to_csv('database.csv', index=False, na_rep='NaN')
 
 # %%
