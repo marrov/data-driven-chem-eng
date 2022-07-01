@@ -9,4 +9,7 @@ Data-data driven chemical engineering exercises in Matlab
 - [X] Reduce MNIST dataset size so runtime is small
 - [X] Add comments/examples for varying t-SNE parameters
 - [X] Refactor code for I/O clarity
-- [ ] Use GSA code to generate database in parallel
+- [X] Generate database
+- [ ] Add noise to database*
+
+* [Check this](https://stackoverflow.com/questions/46093073/adding-gaussian-noise-to-a-dataset-of-floating-points-and-save-it-python)
