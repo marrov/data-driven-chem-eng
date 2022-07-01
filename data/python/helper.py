@@ -61,7 +61,7 @@ def get_flame(gas):
     return gas, f
 
 
-def burn_ammonia(T_in: float, eta: float, phi: float, omega: float) -> tuple:
+def burn_ammonia(T_in: float, eta: float, phi: float, omega: float) -> list:
     # Get current time
     start_time = time.time()
     
@@ -82,10 +82,10 @@ def burn_ammonia(T_in: float, eta: float, phi: float, omega: float) -> tuple:
     # Calculate flame speed
     gas.TPX = T_in, P_in, X  # Reset gas state
     (gas, f) = get_flame(gas)
-    SL = f.u[0]
+    SL = f.velocity[0]
     delta = get_thermal_thickness(f)
 
     # Calculate runtime
     runtime = time.time() - start_time
 
-    return Tad, NO, NO2, NH3, SL, delta, runtime
+    return [Tad, NO, NO2, NH3, SL, delta, runtime]
