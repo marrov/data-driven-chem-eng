@@ -18,12 +18,12 @@ input_labels = ['T_in', 'eta', 'phi', 'omega']
 
 problem = {'num_vars': len(input_labels),
            'names': input_labels,
-           'bounds': [[500, 1000],
+           'bounds': [[300, 1000],
                       [0, 1],
-                      [0.5, 1.5],
+                      [0.5, 2],
                       [0, 0.8]]}
 
-inputs = list(saltelli.sample(problem, 2**9, calc_second_order=False))
+inputs = list(saltelli.sample(problem, 2**10, calc_second_order=False))
 
 # %% Run case and get outputs
 
