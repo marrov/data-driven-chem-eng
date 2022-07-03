@@ -39,19 +39,32 @@ inputs = list(saltelli.sample(problem, 2**10, calc_second_order=False))
 output_labels = ['Tad', 'NO', 'NO2', 'NH3', 'SL', 'delta', 'runtime']
 outputs = []
 
-for input in inputs:
+idx_first = 1602 - 2
+
+for idx in range(idx_first, len(inputs)):
     try:
-        outputs.append(burn_ammonia(*input))
+        outputs.append(burn_ammonia(*inputs[idx]))
     except CanteraError as e:
         print(f'Error: {e}. Inputs used were ' + ', '.join(
-            [f'{label}={value}' for label, value in zip(input_labels, input)]))
+            [f'{label}={value}' for label, value in zip(input_labels, inputs[idx])]))
         outputs.append([None] * len(output_labels))
+
+#for input in inputs:
+#    try:
+#        outputs.append(burn_ammonia(*input))
+#    except CanteraError as e:
+#        print(f'Error: {e}. Inputs used were ' + ', '.join(
+#            [f'{label}={value}' for label, value in zip(input_labels, input)]))
+#        outputs.append([None] * len(output_labels))
 
 # %% Make dataFrame and export to CSV file
 
-df = pd.concat([pd.DataFrame(data=inputs, columns=input_labels),
+idx_last = idx + 1
+
+df = pd.concat([pd.DataFrame(data=inputs[idx_first:idx_last], columns=input_labels),
                 pd.DataFrame(data=outputs, columns=output_labels)], axis=1)
 
-df.to_csv('database.csv', index=False, na_rep='NaN')
+# Indexes first and last point to orig database (both included)
+df.to_csv('database_' + str(idx_first + 2) + '_to_' + str(idx_last + 1) + '.csv', index=False, na_rep='NaN')
 
 # %%
