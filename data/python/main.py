@@ -39,7 +39,7 @@ inputs = list(saltelli.sample(problem, 2**10, calc_second_order=False))
 output_labels = ['Tad', 'NO', 'NO2', 'NH3', 'SL', 'delta', 'runtime']
 outputs = []
 
-idx_first = 1602 - 2
+idx_first = 2736 - 2
 
 for idx in range(idx_first, len(inputs)):
     try:
