@@ -36,7 +36,7 @@ gscatter(Y(:,1),Y(:,2),L,clr)
 % Different distance metrics
 % Y = tsne(X, ...
 
-% Either or all of PCA components, learning rate, exxageration
+% At least one of the following: PCA components, learning rate, exageration
 % Y = tsne(X, ...
 
 % Not using "rng default"
