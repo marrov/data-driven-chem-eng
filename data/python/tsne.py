@@ -1,6 +1,5 @@
 # %% Imports
 
-import numpy as np
 import keyfi as kf
 import pandas as pd
 
