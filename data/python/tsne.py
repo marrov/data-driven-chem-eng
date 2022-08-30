@@ -1,10 +1,11 @@
 # %% Imports
 
+import numpy as np
 import keyfi as kf
 import pandas as pd
-import seaborn as sns
 
 from math import sqrt
+from sklearn.preprocessing import RobustScaler
 
 # %% Read database
 
@@ -13,14 +14,15 @@ df = pd.read_csv('database.csv')
 # %% Clean database
 
 # Remove input variables and run time output variable
-df.drop(labels=['runtime'], axis=1, inplace=True)
+input_labels = ['T_in', 'eta', 'phi', 'omega']
+df.drop(labels=input_labels + ['runtime'], axis=1, inplace=True)
 
-# Remove rows with outliers in SL and delta base on IQR
+# Remove rows with outliers based on IQR
 def remove_outlier_IQR(df):
     Q1 = df.quantile(0.25)
     Q3 = df.quantile(0.75)
-    IQR = Q3-Q1
-    df = df[~((df < (Q1-1.5*IQR)) | (df > (Q3+1.5*IQR)))]
+    IQR = Q3 - Q1
+    df = df[~((df < (Q1 - 1.5 * IQR)) | (df > (Q3 + 1.5 * IQR)))]
     return df
 
 df = remove_outlier_IQR(df)
@@ -30,6 +32,11 @@ df.dropna(inplace=True)
 
 # Reindex dataframe
 df.reset_index(drop=True, inplace=True)
+
+# %% Scale data
+
+df[:] = RobustScaler().fit(df).transform(df)
+
 
 # %% Run dimensionality reduction with t-SNE or UMAP
 
@@ -44,14 +51,15 @@ if flag_tsne:
     embedding, mapper = kf.embed_data(
         data=df,
         algorithm=kf.dimred.TSNE,
-        scale=True,
-        perplexity=n
+        scale=False,
+        perplexity=n,
+        init='pca'
     )
 else:
     embedding, mapper = kf.embed_data(
         data=df,
         algorithm=kf.dimred.UMAP,
-        scale=True,
+        scale=False,
         n_neighbors=n,
         min_dist=0.01,
         random_state=42,
