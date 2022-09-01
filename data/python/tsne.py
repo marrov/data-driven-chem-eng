@@ -4,7 +4,7 @@ import keyfi as kf
 import pandas as pd
 
 from math import sqrt
-from sklearn.preprocessing import RobustScaler
+from sklearn.preprocessing import PowerTransformer
 
 # %% Read database
 
@@ -34,14 +34,13 @@ df.reset_index(drop=True, inplace=True)
 
 # %% Scale data
 
-df[:] = RobustScaler().fit(df).transform(df)
-
+#df[:] = PowerTransformer(method="box-cox").fit_transform(df)
 
 # %% Run dimensionality reduction with t-SNE or UMAP
 
 # Find rounded sqrt of number of points
 N = len(df.index)
-n = round(sqrt(N))
+n = 2 * round(sqrt(N))
 
 # Use flag to change between algorithms
 flag_tsne = 1
@@ -50,7 +49,7 @@ if flag_tsne:
     embedding, mapper = kf.embed_data(
         data=df,
         algorithm=kf.dimred.TSNE,
-        scale=False,
+        scale=True,
         perplexity=n,
         init='pca'
     )
@@ -58,7 +57,7 @@ else:
     embedding, mapper = kf.embed_data(
         data=df,
         algorithm=kf.dimred.UMAP,
-        scale=False,
+        scale=True,
         n_neighbors=n,
         min_dist=0.01,
         random_state=42,
@@ -88,6 +87,28 @@ kf.plot_cluster_membership(
     embedding=embedding,
     clusterer=clusterer,
     soft=True
+)
+
+# %% Plot MI scores for both clusters
+
+cluster_mi_scores = kf.get_cluster_mi_scores(
+    data=df,
+    clusterer=clusterer,
+    embedding=embedding,
+    cluster_num=0,
+    scale=False,
+    flag_print=False,
+    flag_plot=True
+)
+
+cluster_mi_scores = kf.get_cluster_mi_scores(
+    data=df,
+    clusterer=clusterer,
+    embedding=embedding,
+    cluster_num=1,
+    scale=False,
+    flag_print=False,
+    flag_plot=True
 )
 
 # %%
